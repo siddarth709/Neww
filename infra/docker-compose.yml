@@ -1,0 +1,45 @@
+version: "3.9"
+
+# Entirely local, entirely free — no cloud accounts, no paid images.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: training
+      POSTGRES_PASSWORD: training
+      POSTGRES_DB: training_verification
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  ipfs:
+    image: ipfs/kubo:latest
+    restart: unless-stopped
+    ports:
+      - "4001:4001"   # p2p swarm
+      - "5001:5001"   # HTTP API
+      - "8080:8080"   # gateway
+    volumes:
+      - ipfsdata:/data/ipfs
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - ipfs
+    environment:
+      DATABASE_URL: postgresql://training:training@postgres:5432/training_verification
+      RPC_URL: http://host.docker.internal:8545   # Hardhat node runs on the host
+      IPFS_API_URL: http://ipfs:5001
+      CONTRACT_ADDRESS: ${CONTRACT_ADDRESS}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+
+volumes:
+  pgdata:
+  ipfsdata:

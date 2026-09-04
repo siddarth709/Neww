@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+backend/.env
+backend/verify_nn.db
+backend/uploads/
+backend/__pycache__/
+contracts/artifacts/
+contracts/cache/
+contracts/.env
+build/
+*.pyc

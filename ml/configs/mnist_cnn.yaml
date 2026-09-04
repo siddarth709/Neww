@@ -1,0 +1,30 @@
+# Example config using the reference MNIST plugins in ml/examples/.
+# Copy this file, point model_path/dataset_path at your own code, and run:
+#   python train_real.py --config configs/your_config.yaml
+
+model_path: examples/mnist_model.py
+model_class: SimpleCNN
+
+dataset_path: examples/mnist_dataset.py
+
+num_nodes: 6
+malicious_nodes: 1
+rounds: 15
+
+local_epochs: 1
+learning_rate: 0.01
+batch_size: 32
+optimizer: sgd            # sgd | adam
+loss: cross_entropy       # cross_entropy | mse | bce
+
+attack_type: label_flip   # scale | label_flip | none
+attack_scale: 8.0
+num_classes: 10           # required only when attack_type is label_flip
+
+anomaly_threshold: 0.7
+projection_dim: 256
+trim_fraction: 0.1
+
+backend_url: http://localhost:8000
+checkpoint_path: models/global_model_final.pt
+seed: 42
